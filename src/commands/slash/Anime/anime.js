@@ -7,7 +7,7 @@ module.exports = {
         .setName('anime')
         .setDescription('Get information about an anime.')
         .addStringOption(option =>
-            option.setName('message')
+            option.setName('title')
                 .setDescription('The title of the anime.')
                 .setRequired(true)
         ),
@@ -19,7 +19,7 @@ module.exports = {
        
 
         try {
-            const title = interaction.options.getString("message");
+            const title = interaction.options.getString("title");
             const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(title)}&limit=1`);
             const data = response.data.data[0];
             let trailerUrl = "No trailer available";
