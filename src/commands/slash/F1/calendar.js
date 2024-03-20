@@ -50,7 +50,7 @@ module.exports = {
                     { name: 'Timezone', value: 'UTC' },
                 )
                 .setTimestamp()
-                .setFooter({ text: 'Built by Jyben (https://github.com/Jyben)', iconURL: 'attachment://jyben.png' })
+                .setFooter({ text: 'Built by Anchan', iconURL: 'attachment://jyben.png' })
         } // Add a comma here
         async function getScheduleAsync() {
             const response = await axios.get('http://ergast.com/api/f1/current.json');
