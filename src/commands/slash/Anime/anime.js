@@ -1,14 +1,13 @@
 
 const axios = require('axios');
+const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const jyben = new AttachmentBuilder('./assets/jyben.png');
 module.exports = {
     structure: new SlashCommandBuilder()
-        .setName('searchanime')
+        .setName('anime')
         .setDescription('Get information about an anime.')
         .addStringOption(option =>
-            option.setName('title')
+            option.setName('message')
                 .setDescription('The title of the anime.')
                 .setRequired(true)
         ),
@@ -20,7 +19,7 @@ module.exports = {
        
 
         try {
-            const title = interaction.options.getString("title");
+            const title = interaction.options.getString("message");
             const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(title)}&limit=1`);
             const data = response.data.data[0];
             let trailerUrl = "No trailer available";
@@ -72,7 +71,10 @@ module.exports = {
                 )
                 .setImage(data.images.jpg.image_url || "")
                 .setTimestamp(new Date())
-                .setFooter({ text: 'Built by Anchan', iconURL: jyben.url })
+                .setFooter({
+                    text: "Powered by Nomekuma",
+                    iconURL: "https://avatars.githubusercontent.com/u/122863540?v=4",
+                });
 
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
