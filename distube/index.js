@@ -1,29 +1,34 @@
-require('dotenv').config();
-const ExtendedClient = require('./class/ExtendedClient');
-const { DisTube } = require('distube')
-const { EmbedBuilder } = require('discord.js');
-const { SpotifyPlugin } = require('@distube/spotify')
-const { SoundCloudPlugin } = require('@distube/soundcloud')
-const { YtDlpPlugin } = require('@distube/yt-dlp')
-const client = new ExtendedClient();
+const { DisTube } = require("distube");
+const client = require("../index.js");
+const { EmbedBuilder } = require("discord.js");
+const { SpotifyPlugin } = require("@distube/spotify");
+const { SoundCloudPlugin } = require("@distube/soundcloud");
+
 const Format = Intl.NumberFormat();
 let spotifyOptions = {
     parallel: true,
     emitEventsAfterFetching: false,
 };
+// const { getVoiceConnection }= require('@discordjs/voice');
+
 client.distube = new DisTube(client, {
     leaveOnStop: false,
+    leaveOnEmpty: true,
     emitNewSongOnly: true,
-    emitAddSongWhenCreatingQueue: false,
-    emitAddListWhenCreatingQueue: false,
-    plugins: [
-      new SpotifyPlugin({
-        emitEventsAfterFetching: true
-      }),
-      new SoundCloudPlugin(),
-      new YtDlpPlugin()
-    ]
-})
+    emitAddSongWhenCreatingQueue: true,
+    emitAddListWhenCreatingQueue: true,
+    // youtubeDL: false,
+    // youtubeCookie: client.config.cookie,
+    plugins: [new SpotifyPlugin(spotifyOptions), new SoundCloudPlugin()],
+});
+
+if (client.config.spotifyApi.enabled) {
+    spotifyOptions.api = {
+        clientId: client.config.spotifyApi.clientId,
+        clientSecret: client.config.spotifyApi.clientSecret,
+    };
+}
+
 const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Filter: \`${
         queue.filters.names.join(", ") || "Off"
@@ -39,6 +44,7 @@ client.distube.on("addSong", async (queue, song) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorDefault)
                 .setAuthor({
                     name: "Add song to queue",
                     iconURL: client.user.avatarURL(),
@@ -78,6 +84,7 @@ client.distube.on("addList", async (queue, playlist) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorDefault)
                 .setAuthor({
                     name: "Add playlist to queue",
                     iconURL: client.user.avatarURL(),
@@ -112,6 +119,7 @@ client.distube.on("playSong", async (queue, song) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorDefault)
                 .setAuthor({
                     name: "Now playing",
                     iconURL: client.user.avatarURL(),
@@ -184,6 +192,7 @@ client.distube.on("empty", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorError)
                 .setDescription(
                     `🚫 | The room is empty, the bot automatically leaves the room!`
                 ),
@@ -198,6 +207,7 @@ client.distube.on("error", async (channel, error) => {
     const msg = await channel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorError)
                 .setDescription(
                     `🚫 | An error has occurred!\n\n** ${error
                         .toString()
@@ -214,6 +224,7 @@ client.distube.on("disconnect", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorError)
                 .setDescription(`🚫 | The bot has disconnected from the voice channel!`),
         ],
     });
@@ -226,6 +237,7 @@ client.distube.on("finish", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorError)
                 .setDescription(
                     `🚫 | All songs on the playlist have been played!`
                 ),
@@ -245,6 +257,7 @@ client.distube.on("noRelated", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
+                .setColor(client.config.colorError)
                 .setDescription(`🚫 | Song not found!`),
         ],
     });
@@ -252,8 +265,3 @@ client.distube.on("noRelated", async (queue) => {
         msg.delete();
     }, 20000);
 });
-client.start();
-
-// Handles errors and avoids crashes, better to not remove them.
-process.on('unhandledRejection', console.error);
-process.on('uncaughtException', console.error);
