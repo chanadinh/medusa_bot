@@ -42,7 +42,7 @@ client.distube.on("addSong", async (queue, song) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorDefault)
+                
                 .setAuthor({
                     name: "Add song to queue",
                     iconURL: client.user.avatarURL(),
@@ -82,7 +82,7 @@ client.distube.on("addList", async (queue, playlist) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorDefault)
+                
                 .setAuthor({
                     name: "Add playlist to queue",
                     iconURL: client.user.avatarURL(),
@@ -117,7 +117,7 @@ client.distube.on("playSong", async (queue, song) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorDefault)
+             
                 .setAuthor({
                     name: "Now playing",
                     iconURL: client.user.avatarURL(),
@@ -190,7 +190,7 @@ client.distube.on("empty", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorError)
+                
                 .setDescription(
                     `🚫 | The room is empty, the bot automatically leaves the room!`
                 ),
@@ -205,7 +205,7 @@ client.distube.on("error", async (channel, error) => {
     const msg = await channel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorError)
+               
                 .setDescription(
                     `🚫 | An error has occurred!\n\n** ${error
                         .toString()
@@ -222,7 +222,7 @@ client.distube.on("disconnect", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorError)
+     
                 .setDescription(`🚫 | The bot has disconnected from the voice channel!`),
         ],
     });
@@ -235,7 +235,7 @@ client.distube.on("finish", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorError)
+               
                 .setDescription(
                     `🚫 | All songs on the playlist have been played!`
                 ),
@@ -255,7 +255,8 @@ client.distube.on("noRelated", async (queue) => {
     const msg = await queue.textChannel.send({
         embeds: [
             new EmbedBuilder()
-                .setColor(client.config.colorError)
+              
+            
                 .setDescription(`🚫 | Song not found!`),
         ],
     });
