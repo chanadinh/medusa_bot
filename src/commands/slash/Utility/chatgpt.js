@@ -1,5 +1,5 @@
 // Prefix:
-const { ChatInputCommandInteraction, SlashCommandBuilder } = require('discord.js');
+const { ChatInputCommandInteraction, SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { Message, PermissionFlagBits } = require('discord.js');
 const {OpenAI } = require("openai");
@@ -21,27 +21,28 @@ module.exports = {
         ),
      /**
      * @param {ExtendedClient} client 
-     * @param {ChatInputCommandInteraction} interaction 
+     * @param {ChatInputCommandInteraction<true>} interaction
+     * @param {Message<true>} message
      */
-    run: async (client, message, args) => {
+    run: async (message,interaction) => {
+      // await interaction.deferReply();
         // if (message.author.bot) return;
   
     // Trigger bot if a message starts with ! so that not every message is responded by the bot
       try {
-        await message.channel.sendTyping();
         let ConvoLog = [{ role: "system", content: "Discord Chat Bot" }];
-  
-        let prevMsgs = await message.channel.messages.fetch({ limit: 20 });
-        prevMsgs.reverse();
-        prevMsgs.forEach((m) => {
+        const mes = interaction.options.getString("message");
+        // let prevMsgs = await message.channel.messages.fetch({ limit: 20 });
+        // prevMsgs.reverse();
+        // prevMsgs.forEach((m) => {
         //   if (m.author.id !== client.user.id && message.author.bot) return;
         //   if (m.author.id !== message.author.id) return;
   
           ConvoLog.push({
             role: "user",
-            content: m.content,
+            content: mes,
           });
-        });
+        // });
   
         const response = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
@@ -49,10 +50,28 @@ module.exports = {
         });
    
         const repmsg = response.choices[0].message.content;
-        for (let i = 0; i < repmsg.length; i += 2000) {
-          const toSend = repmsg.substring(i, Math.min(repmsg.length, i + 2000));
-          message.channel.send(toSend);
-        }
+        // for (let i = 0; i < repmsg.length; i += 2000) {
+        //   const toSend = repmsg.substring(i, Math.min(repmsg.length, i + 2000));
+        // if (repmsg.length < 2000) 
+        //   await interaction.reply({
+        //     content: repmsg,
+        //   });
+        // else {
+          const toSend = repmsg.substring(0,100);
+          const attachment = new AttachmentBuilder("chatgpt.txt", Buffer.from(repmsg));
+          await interaction.deferReply({ content: "waiting" ,ephemeral: true });
+          // if (repmsg.length < 2000) 
+          await interaction.editReply({
+            content: toSend,
+          });
+          // else {
+          //   const toSend = repmsg.substring(0,10);
+          //  await interaction.editReply({
+          //   content: toSend,
+          //   // files: [attachment]
+          // });
+          // }
+        // }
       } catch (e) {
         console.log(e);
       }
