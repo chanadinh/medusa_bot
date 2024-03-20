@@ -1,7 +1,7 @@
 
 const axios = require('axios');
 
-const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const jyben = new AttachmentBuilder('./assets/jyben.png');
 module.exports = {
     structure: new SlashCommandBuilder()
