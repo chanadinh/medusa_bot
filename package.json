@@ -10,8 +10,6 @@
   "author": "TFAGaming",
   "license": "GPL-3.0",
   "dependencies": {
-    
-    "ws": "^8.14.2",
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.15.0",
     "@distube/soundcloud": "^1.2.1",
@@ -20,6 +18,7 @@
     "@distube/ytsr": "^2.0.0",
     "axios": "^1.6.8",
     "chalk": "^2.4.2",
+    "date-and-time": "^3.1.1",
     "discord.js": "^14.14.1",
     "distube": "^4.1.1",
     "dotenv": "^16.3.1",
@@ -27,6 +26,7 @@
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.10",
     "mongoose": "^7.3.1",
-    "openai": "^4.29.2"
+    "openai": "^4.29.2",
+    "ws": "^8.14.2"
   }
 }
