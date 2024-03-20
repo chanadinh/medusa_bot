@@ -11,7 +11,7 @@ module.exports = {
         .setDescription("Play a song")
         .addStringOption(option =>
             option
-                .setName('keyword or URL')
+                .setName('music')
                 .setDescription('The song you want to play')
                 .setRequired(true)
             ),
@@ -21,7 +21,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction<true>} interaction
      */
     run: async (client,interaction) => {
-        const keyword = interaction.options.getString('keyword or URL');
+        const keyword = interaction.options.getString('music');
 
         const voiceChannel = interaction.member.voice.channel;
         const queue = await client.distube.getQueue(interaction);
