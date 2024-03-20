@@ -24,54 +24,244 @@ client.distube = new DisTube(client, {
       new YtDlpPlugin()
     ]
 })
-const status = queue =>
-  `Volume: \`${queue.volume}%\` | Filter: \`${queue.filters.names.join(', ') || 'Off'}\` | Loop: \`${
-    queue.repeatMode ? (queue.repeatMode === 2 ? 'All Queue' : 'This Song') : 'Off'
-  }\` | Autoplay: \`${queue.autoplay ? 'On' : 'Off'}\``
-client.distube
-  .on('playSong', (queue, song) =>
-    queue.textChannel.send(
-      `| Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${
-        song.user
-      }\n${status(queue)}`
-    )
-  )
-  .on('addSong', (queue, song) =>
-    queue.textChannel.send(
-      `${client.emotes.success} | Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}`
-    )
-  )
-  .on('addList', (queue, playlist) =>
-    queue.textChannel.send(
-      `${client.emotes.success} | Added \`${playlist.name}\` playlist (${
-        playlist.songs.length
-      } songs) to queue\n${status(queue)}`
-    )
-  )
-  .on('error', (channel, e) => {
-    if (channel) channel.send(`${client.emotes.error} | An error encountered: ${e.toString().slice(0, 1974)}`)
-    else console.error(e)
-  })
-  .on('empty', channel => channel.send('Voice channel is empty! Leaving the channel...'))
-  .on('searchNoResult', (message, query) =>
-    message.channel.send(`${client.emotes.error} | No result found for \`${query}\`!`)
-  )
-  .on('finish', queue => queue.textChannel.send('Finished!'))
-  // DisTubeOptions.searchSongs = true
-.on("searchResult", (message, result) => {
-    let i = 0
-    message.channel.send(
-        `**Choose an option from below**\n${result
-            .map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``)
-            .join("\n")}\n*Enter anything else or wait 60 seconds to cancel*`
-    )
-})
-.on("searchCancel", message => message.channel.send(`${client.emotes.error} | Searching canceled`))
-.on("searchInvalidAnswer", message =>
-    message.channel.send(
-        `${client.emotes.error} | Invalid answer! You have to enter the number in the range of the results`
-    )
-)
+const status = (queue) =>
+    `Volume: \`${queue.volume}%\` | Filter: \`${
+        queue.filters.names.join(", ") || "Off"
+    }\` | Repeat: \`${
+        queue.repeatMode
+            ? queue.repeatMode === 2
+                ? "Playlist"
+                : "Song"
+            : "Off"
+    }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
+
+client.distube.on("addSong", async (queue, song) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+                
+
+                .setAuthor({
+                    name: "Add song to queue",
+                    iconURL: client.user.avatarURL(),
+                })
+                .setDescription(`> [**${song.name}**](${song.url})`)
+                .setThumbnail(song.user.displayAvatarURL())
+                .addFields([
+                    {
+                        name: "⏱️ | Time",
+                        value: `${song.formattedDuration}`,
+                        inline: true,
+                    },
+                    {
+                        name: "🎵 | Upload",
+                        value: `[${song.uploader.name}](${song.uploader.url})`,
+                        inline: true,
+                    },
+                    {
+                        name: "👌 | Request by",
+                        value: `${song.user}`,
+                        inline: true,
+                    },
+                ])
+                .setImage(song.thumbnail)
+                .setFooter({
+                    text: `${Format.format(queue.songs.length)} songs in queue`,
+                }),
+        ],
+    });
+
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("addList", async (queue, playlist) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+               
+                .setAuthor({
+                    name: "Add playlist to queue",
+                    iconURL: client.user.avatarURL(),
+                })
+                .setThumbnail(playlist.user.displayAvatarURL())
+                .setDescription(`> [**${playlist.name}**](${playlist.url})`)
+                .addFields([
+                    {
+                        name: "⏱️ | Time",
+                        value: `${playlist.formattedDuration}`,
+                        inline: true,
+                    },
+                    {
+                        name: "👌 | Request by",
+                        value: `${playlist.user}`,
+                        inline: true,
+                    },
+                ])
+                .setImage(playlist.thumbnail)
+                .setFooter({
+                    text: `${Format.format(queue.songs.length)} songs in queue`,
+                }),
+        ],
+    });
+
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("playSong", async (queue, song) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+             
+                .setAuthor({
+                    name: "Now playing",
+                    iconURL: client.user.avatarURL(),
+                })
+                .setDescription(`> [**${song.name}**](${song.url})`)
+                .setThumbnail(song.user.displayAvatarURL())
+                .addFields([
+                    {
+                        name: "🔷 | Status",
+                        value: `${status(queue).toString()}`,
+                        inline: false,
+                    },
+                    {
+                        name: "👀 | Views",
+                        value: `${Format.format(song.views)}`,
+                        inline: true,
+                    },
+                    {
+                        name: "👍 | Likes",
+                        value: `${Format.format(song.likes)}`,
+                        inline: true,
+                    },
+                    {
+                        name: "⏱️ | Time",
+                        value: `${song.formattedDuration}`,
+                        inline: true,
+                    },
+                    {
+                        name: "🎵 | Upload",
+                        value: `[${song.uploader.name}](${song.uploader.url})`,
+                        inline: true,
+                    },
+                    {
+                        name: "💾 | Dowload",
+                        value: `[Click vào đây](${song.streamURL})`,
+                        inline: true,
+                    },
+                    {
+                        name: "👌 | Request by",
+                        value: `${song.user}`,
+                        inline: true,
+                    },
+                    {
+                        name: "📻 | Play music at",
+                        value: `
+┕🔊 | ${client.channels.cache.get(queue.voiceChannel.id)}
+┕🪄 | ${queue.voiceChannel.bitrate / 1000}  kbps`,
+                        inline: false,
+                    },
+                    {
+                        name: "🤖 | Suggestions",
+                        value: `[${song.related[0].name}](${song.related[0].url})
+┕⌛ | Time: ${song.related[0].formattedDuration} | 🆙 | Upload lên bởi: [${song.related[0].uploader.name}](${song.related[0].uploader.url})`,
+                        inline: false,
+                    },
+                ])
+                .setImage(song.thumbnail)
+                .setFooter({
+                    text: `${Format.format(queue.songs.length)} songs in queue`,
+                }),
+        ],
+    });
+
+    setTimeout(() => {
+        msg.delete();
+    }, 1000 * 60 * 2);
+});
+
+client.distube.on("empty", async (queue) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+               
+                .setDescription(
+                    `🚫 | The room is empty, the bot automatically leaves the room!`
+                ),
+        ],
+    });
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("error", async (channel, error) => {
+    const msg = await channel.send({
+        embeds: [
+            new EmbedBuilder()
+                
+                .setDescription(
+                    `🚫 | An error has occurred!\n\n** ${error
+                        .toString()
+                        .slice(0, 1974)}**`
+                ),
+        ],
+    });
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("disconnect", async (queue) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+            
+
+                .setDescription(`🚫 | The bot has disconnected from the voice channel!`),
+        ],
+    });
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("finish", async (queue) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+               
+                .setDescription(
+                    `🚫 | All songs on the playlist have been played!`
+                ),
+        ],
+    });
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
+
+client.distube.on("initQueue", async (queue) => {
+    queue.autoplay = true;
+    queue.volume = 100;
+});
+
+client.distube.on("noRelated", async (queue) => {
+    const msg = await queue.textChannel.send({
+        embeds: [
+            new EmbedBuilder()
+              
+                .setDescription(`🚫 | Song not found!`),
+        ],
+    });
+    setTimeout(() => {
+        msg.delete();
+    }, 20000);
+});
 // .on("searchDone", () => {})
 client.start();
 
