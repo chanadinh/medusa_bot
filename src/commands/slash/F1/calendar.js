@@ -18,7 +18,7 @@ module.exports = {
      * @param {ExtendedClient} client 
      * @param {ChatInputCommandInteraction} interaction 
      */
-    run: async (client, interaction) => {
+    run: async (message,interaction) => {
 
         const response = await getScheduleAsync();
         const embed = getEmbed(response[0].Circuit.Location.locality,
