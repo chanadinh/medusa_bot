@@ -2,12 +2,6 @@
 
 Medusa Bot is a Discord chat bot built with Node.js.
 
-## Features
-
-- Feature 1: [Brief description of feature 1]
-- Feature 2: [Brief description of feature 2]
-- Feature 3: [Brief description of feature 3]
-
 ## Installation
 
 To install and run the Medusa Bot, follow these steps:
