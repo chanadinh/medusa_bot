@@ -26,11 +26,17 @@ module.exports = {
         const apiKey = 'c05739dd4b3b87f5fc8ab9cca32872ad';
 
         try {
+            function getRandomInt(min, max) {
+                const minCeiled = Math.ceil(min);
+                const maxFloored = Math.floor(max);
+                return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+              }
             // Make a request to the Flickr API to get photo information
             const response = await axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&text=${photoraw}&sort=relevance&safe_search=3&api_key=${apiKey}&format=json&nojsoncallback=1`);
             const data = response.data;
-            const photoId = response.data.photos.photo[0].id;
-            const photoOwner = response.data.photos.photo[0].owner;
+            const photoIndex = getRandomInt(0, data.photos.photo.length);
+            const photoId = response.data.photos.photo[photoIndex].id;
+            const photoOwner = response.data.photos.photo[photoIndex].owner;
 
             // Check if the request was successful
             if (data.stat !== 'ok') {
