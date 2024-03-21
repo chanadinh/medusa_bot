@@ -7,7 +7,7 @@ module.exports = {
         .setName('anime')
         .setDescription('Get information about an anime.')
         .addStringOption(option =>
-            option.setName('message')
+            option.setName('title')
                 .setDescription('The title of the anime.')
                 .setRequired(true)
         ),
@@ -19,7 +19,7 @@ module.exports = {
        
 
         try {
-            const title = interaction.options.getString("message");
+            const title = interaction.options.getString("title");
             const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(title)}&limit=1`);
             const data = response.data.data[0];
             let trailerUrl = "No trailer available";
@@ -72,8 +72,8 @@ module.exports = {
                 .setImage(data.images.jpg.image_url || "")
                 .setTimestamp(new Date())
                 .setFooter({
-                    text: "Powered by Nomekuma",
-                    iconURL: "https://avatars.githubusercontent.com/u/122863540?v=4",
+                    text: "Powered by Anchan",
+                    iconURL: "https://cdn.discordapp.com/attachments/897026419832537138/1220126368629657620/jyben.png?ex=660dce3b&is=65fb593b&hm=c506b99a53e5e29e44deb5b70be1253f033f31371b11dad878821a0b6f737476&",
                 });
 
             await interaction.reply({ embeds: [embed] });
