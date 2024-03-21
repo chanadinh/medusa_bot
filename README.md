@@ -38,8 +38,6 @@ Please make sure to follow the existing code style and guidelines.
 
 ## License
 
-[Choose an open source license for your bot, e.g., MIT License]
-
 See [LICENSE](LICENSE) file for more information.
 
 ## Contact
