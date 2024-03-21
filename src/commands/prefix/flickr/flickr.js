@@ -1,7 +1,7 @@
 const { Message } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const axios = require('axios').default;
-
+const fs = require('fs')  
 
 module.exports = {
     structure: {
@@ -37,7 +37,20 @@ module.exports = {
             const photoIndex = getRandomInt(0, data.photos.photo.length);
             const photoId = response.data.photos.photo[photoIndex].id;
             const photoOwner = response.data.photos.photo[photoIndex].owner;
+            const response2 = await axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=${photoId}&photo_owner=${photoOwner}&api_key=${apiKey}&format=json&nojsoncallback=1`);
+            const data2 = response2.data;
+            const downloadUrl = data2.sizes.size[Math.floor(data2.sizes.size.length)-1].source;
+            // const writer = fs.createWriteStream('image.jpg');
+            // const getImgName = (downloadUrl) => downloadUrl.slice(downloadUrl.lastIndexOf('/') + 1, downloadUrl.lastIndexOf('.'));
+            // const response3 = await axios.get(downloadUrl, {
+            //     responseType: 'stream'
+            //   });	
+            //   response3.data.pipe(writer);
 
+   
+            //   const mimeType = response3.headers['content-type'];
+            //     const fileExtension = mimeType.split('/')[1];
+            
             // Check if the request was successful
             if (data.stat !== 'ok') {
                 return message.reply('Failed to fetch photo information from Flickr!');
@@ -47,9 +60,13 @@ module.exports = {
 
             // Display the photo information
             // message.channel.send(`Title: ${photoInfo.title._content}`);
-            message.channel.send(`https://www.flickr.com/photos/${photoOwner}/${photoId}/`);
-            message.channel.send(photoraw);
+            // message.channel.send(`https://www.flickr.com/photos/${photoOwner}/${photoId}/`);
+            message.channel.send(downloadUrl);
+            // message.channel.send(getImgName(downloadUrl));
+            // message.channel.send(fileExtension);
+            // message.channel.send(String(data2.sizes.size.length));
             // message.channel.send(`Owner: ${photoInfo.owner.username}`);
+
             // message.channel.send(`Description: ${photoInfo.description._content}`);
             // message.channel.send(`Tags: ${photoInfo.tags.tag.map(tag => tag._content).join(', ')}`);
             // message.channel.send(`Views: ${photoInfo.views}`);
