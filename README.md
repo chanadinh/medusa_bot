@@ -38,8 +38,8 @@ Please make sure to follow the existing code style and guidelines.
 
 ## License
 
-See [LICENSE](LICENSE) file for more information.
+This project is open-source and licensed under the MIT License.
 
 ## Contact
 
-If you have any questions or need support, you can reach me at Discord: anchan7802 or join our Discord server at [invite link to Discord server].
+If you have any questions or need support, you can reach me at Discord: anchan7802 or join our Discord server at https://discord.gg/Gcg8B7rnqV.
