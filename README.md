@@ -6,7 +6,7 @@ Medusa Bot is a Discord chat bot built with Node.js.
 
 To install and run the Medusa Bot, follow these steps:
 
-1. Clone the repository: `git clone [repository URL]`
+1. Clone the repository: `https://github.com/chanadinh/medusa_bot`
 2. Install dependencies: `npm install`
 3. Set up bot token:
    - Create a new Discord bot on the Discord Developer Portal.
